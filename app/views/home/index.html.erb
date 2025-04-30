@@ -1,0 +1,9 @@
+<% if user_signed_in? %> 
+  <div class="text-lg font-bold text-blue-500"> Welcome <%= current_user.email %> </div> 
+  <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "bg-red-500 text-black px-4 py-2 rounded" %> 
+  <h1 class="text-2xl font-semibold">Home#index</h1>
+  <p class="font-bold text-gray-700">Find me in app/views/home/index.html.erb</p>
+<% else %>
+  <%= button_to "Sign in", new_user_session_path, class: "bg-green-500 text-black px-4 py-2 rounded" %> 
+<% end %>
+
