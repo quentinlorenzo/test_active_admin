@@ -41,10 +41,10 @@ gem "bootsnap", require: false
 gem "activeadmin", "4.0.0.beta15"
 
 # Plus integrations with:
-gem 'devise'
-gem 'cancancan'
-gem 'draper'
-gem 'pundit'
+gem "devise"
+gem "cancancan"
+gem "draper"
+gem "pundit"
 gem "sassc-rails"
 
 group :development, :test do
