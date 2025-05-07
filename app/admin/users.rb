@@ -1,61 +1,96 @@
+# ActiveAdmin configuration for User model
 ActiveAdmin.register User do
-  permit_params :email, :password, :password_confirmation, :parent_id
-  menu priority: 1
-  config.per_page = [ 10, 50, 100 ]
-  actions :all, except: [ :destroy ]
+  # Permitted parameters for create/update
+  permit_params :email, :password, :password_confirmation, :parent_id, group_ids: []
 
-  config.sort_order = "id_asc"
+  menu parent: "Gestion", priority: 1  # Affiche sous le menu "Gestion"
+  config.per_page = [ 10, 50, 100 ]  # Pagination options
+  actions :all, except: [ :destroy ]  # Disable deletion
 
-  index do
-    selectable_column
-    id_column
-    column :email do |user|
-      link_to user.email, admin_user_path(user)
-    end
-    column :parent
-    column :created_at
-    actions
+  config.sort_order = "id_asc"  # Default sorting
+
+  batch_action :remove_parent do |ids|
+    User.where(id: ids).update_all(parent_id: nil)  # Set parent_id to nil for selected users
+    redirect_to collection_path, notice: "Parent retiré pour les utilisateurs sélectionnés."
   end
 
-  filter :email
-  filter :created_at
-  filter :parent_id_null, as: :boolean, label: "Sans parent"
-  filter :parent,
+  # Index page configuration
+  index do
+    selectable_column  # For batch actions
+    id_column  # Show ID column
+    column :email do |user|  # Email with link to show page
+      link_to user.email, admin_user_path(user)
+    end
+    column :parent  # Parent relationship
+    column :created_at  # Creation timestamp
+    column "Groupes" do |user|
+      user.groups.map do |group|
+        link_to group.name, admin_group_path(group)  # Lien vers chaque groupe
+      end.join(", ").html_safe
+    end
+    actions  # Default action links
+  end
+
+  # index as: :my_idea do
+  #   column :email
+  #   actions
+  # end
+
+  # Filter configuration
+  filter :email  # Filter by email
+  filter :created_at  # Filter by creation date
+  filter :parent_id_null, as: :boolean, label: "Sans parent"  # Filter users without parent
+  filter :parent,  # Filter by specific parent
          as: :select,
          collection: -> { User.pluck(:email, :id) },
          label: "Parent spécifique"
 
+  # Form configuration
   form do |f|
     f.inputs do
-      f.input :email
-      f.input :password
-      f.input :password_confirmation
-      f.input :parent,
+      f.input :email  # Email field
+      # f.input :password  # Password field
+      # f.input :password_confirmation  # Password confirmation
+      f.input :parent,  # Parent selection dropdown
         as: :select,
         collection: [ [ "Aucun parent", nil ] ] + User.where.not(id: f.object.id).pluck(:email, :id),
         prompt: "Choisir un parent",
         include_blank: false
+
+      # Remplacement par des checkboxes pour les groupes
+      f.input :groups,
+        as: :check_boxes,  # Utilise des checkboxes
+        collection: Group.all.map { |g| [ g.name, g.id ] },  # Liste des groupes
+        label: "Groupes"
     end
-    f.actions
+    f.actions  # Form submit buttons
   end
 
+  # Show page configuration
   show do
-    attributes_table do
+    attributes_table do  # Basic user info
       row :email
       row :parent
       row :created_at
+      row "Groupes" do |user|
+        user.groups.map do |group|
+          link_to group.name, admin_group_path(group)  # Lien vers chaque groupe
+        end.join(", ").html_safe
+      end
     end
+
+    # Children section
     panel "Enfants" do
       table_for user.children do
-        column :id do |child|
+        column :id do |child|  # Child ID with link
           link_to child.id, admin_user_path(child)
         end
-        column :email do |child|
+        column :email do |child|  # Child email with link
           link_to child.email, admin_user_path(child)
         end
-        column :parent
-        column :created_at
-        column do |child|
+        column :parent  # Child's parent
+        column :created_at  # Child creation date
+        column do |child|  # Action links for child
           links = []
           links << link_to("View", admin_user_path(child), class: "member_link")
           links << link_to("Edit", edit_admin_user_path(child), class: "member_link")
