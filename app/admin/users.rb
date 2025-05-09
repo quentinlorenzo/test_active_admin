@@ -98,5 +98,9 @@ ActiveAdmin.register User do
         end
       end
     end
+
+    panel "Statistiques" do
+      render partial: "admin/users/stats_graph"
+    end
   end
 end

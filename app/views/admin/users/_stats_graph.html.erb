@@ -1,0 +1,48 @@
+<%# Inclusion de Chart.js %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<%# Canvas pour le graphique ChartJS %>
+<div class="stats-container" style="height: 400px;">
+  <canvas id="usersPerGroupChart"></canvas>
+</div>
+<%# JavaScript pour initialiser le graphique %>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('usersPerGroupChart').getContext('2d');
+
+    // Préparation des données
+    const data = {
+      labels: <%= raw Group.all.map(&:name).to_json %>,
+      datasets: [{
+        label: 'Nombre d\'utilisateurs par groupe',
+        data: <%= raw Group.all.map { |group| group.users.count }.to_json %>,
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    };
+
+    // Configuration du graphique
+    new Chart(ctx, {
+      type: 'bar',
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Distribution des utilisateurs par groupe'
+          }
+        }
+      }
+    });
+  });
+</script> 
