@@ -50,7 +50,6 @@
           @gender_data[:gender_breakdown]["male"][:impressions],
           @gender_data[:gender_breakdown]["unknown"][:impressions]
         ],
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56'],
         title: 'Répartition des impressions par genre',
           metric_name: 'impressions'
         %>
@@ -62,7 +61,6 @@
           @gender_data[:gender_breakdown]["male"][:clicks],
           @gender_data[:gender_breakdown]["unknown"][:clicks]
         ],
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56'],
         title: 'Répartition des clics par genre',
           metric_name: 'clics'
         %>
@@ -74,7 +72,6 @@
           @gender_data[:gender_breakdown]["male"][:reach],
           @gender_data[:gender_breakdown]["unknown"][:reach]
         ],
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56'],
         title: 'Répartition de la portée par genre',
           metric_name: 'portée'
         %>
@@ -94,7 +91,6 @@
           @age_data[:age_breakdown]["55-64"][:impressions],
           @age_data[:age_breakdown]["65+"][:impressions]
         ],
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
         title: 'Répartition des impressions par tranche d\'âge',
           metric_name: 'impressions'
         %>
@@ -109,7 +105,6 @@
           @age_data[:age_breakdown]["55-64"][:clicks],
           @age_data[:age_breakdown]["65+"][:clicks]
         ],
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
         title: 'Répartition des clics par tranche d\'âge',
           metric_name: 'clics'
         %>
@@ -124,7 +119,6 @@
           @age_data[:age_breakdown]["55-64"][:reach],
           @age_data[:age_breakdown]["65+"][:reach]
         ],
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
         title: 'Répartition de la portée par tranche d\'âge',
           metric_name: 'portée'
         %>
@@ -137,7 +131,6 @@
         canvas_id: 'locationImpressionsPieChart',
         labels: @location_data[:location_breakdown].keys,
         data: @location_data[:location_breakdown].values.map { |data| data[:impressions] },
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
         title: 'Répartition des impressions par région',
           metric_name: 'impressions'
         %>
@@ -145,7 +138,6 @@
         canvas_id: 'locationClicksPieChart',
         labels: @location_data[:location_breakdown].keys,
         data: @location_data[:location_breakdown].values.map { |data| data[:clicks] },
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
         title: 'Répartition des clics par région',
           metric_name: 'clics'
         %>
@@ -153,8 +145,33 @@
         canvas_id: 'locationReachPieChart',
         labels: @location_data[:location_breakdown].keys,
         data: @location_data[:location_breakdown].values.map { |data| data[:reach] },
-        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
         title: 'Répartition de la portée par région',
+          metric_name: 'portée'
+        %>
+      </div>
+      <br>
+      <h3>Répartition des impressions, clics et portée par appareil</h3>
+      <br>
+      <div class="graph-container">
+        <%= render 'shared/pie_chart',
+        canvas_id: 'deviceImpressionsPieChart',
+        labels: @device_data[:device_breakdown].keys,
+        data: @device_data[:device_breakdown].values.map { |data| data[:impressions] },
+        title: 'Répartition des impressions par appareil',
+          metric_name: 'impressions'
+        %>
+        <%= render 'shared/pie_chart',
+        canvas_id: 'deviceClicksPieChart',
+        labels: @device_data[:device_breakdown].keys,
+        data: @device_data[:device_breakdown].values.map { |data| data[:clicks] },
+        title: 'Répartition des clics par appareil',
+          metric_name: 'clics'
+        %>
+        <%= render 'shared/pie_chart',
+        canvas_id: 'deviceReachPieChart',
+        labels: @device_data[:device_breakdown].keys,
+        data: @device_data[:device_breakdown].values.map { |data| data[:reach] },
+        title: 'Répartition de la portée par appareil',
           metric_name: 'portée'
         %>
       <% else %>

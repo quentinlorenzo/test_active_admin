@@ -123,4 +123,32 @@ class FacebookAdsService
       {}
     end
   end
+
+  # Fetch device breakdown insights
+  def fetch_device_breakdown(campaign_id)
+    @options[:query].merge!(
+      fields: "impressions,clicks,reach",
+      breakdowns: "device_platform"
+    )
+    url = "/#{campaign_id}/insights"
+
+    begin
+      response = self.class.get(url, @options)
+      data = response["data"] || []
+
+      device_data = data.each_with_object({}) do |item, hash|
+        hash[item["device_platform"]] = {
+          impressions: item["impressions"].to_i,
+          clicks: item["clicks"].to_i,
+          reach: item["reach"].to_i
+        }
+      end
+
+      { device_breakdown: device_data }
+    rescue => e
+      Rails.logger.error("Facebook API Error: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      {}
+    end
+  end
 end

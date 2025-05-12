@@ -20,7 +20,23 @@
         labels: <%= raw labels.to_json %>,
         datasets: [{
           data: <%= raw data.to_json %>,
-          backgroundColor: <%= raw background_colors.to_json %>
+          backgroundColor: [
+            '#FF6384',  //Rose
+            '#36A2EB',  //Bleu
+            '#FFCE56',  //Jaune
+            '#4BC0C0',  //Turquoise
+            '#9966FF',  //Violet
+            '#FF9F40',  //Orange
+            '#8AC24A',  //Vert clair
+            '#FF5722',  //Rouge-orange
+            '#607D8B',  //Bleu-gris
+            '#9C27B0',  //Violet foncé
+            '#00BCD4',  //Cyan
+            '#795548',  //Marron
+            '#CDDC39',  //Lime
+            '#3F51B5',  //Indigo
+            '#E91E63'   //Rose foncé
+            ]
         }]
       },
       options: {
