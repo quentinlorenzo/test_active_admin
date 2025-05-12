@@ -15,7 +15,7 @@ class FacebookAdsService
   # Fetch global campaign insights
   def fetch_global_insights(campaign_id)
     @options[:query].merge!(
-      fields: "impressions,spend,clicks,reach,account_name,campaign_name,date_start,date_stop"
+      fields: "impressions,spend,clicks,reach,actions,account_name,campaign_name,date_start,date_stop"
     )
     url = "/#{campaign_id}/insights"
 
@@ -23,11 +23,22 @@ class FacebookAdsService
       response = self.class.get(url, @options)
       data = response["data"]&.first || {}
 
+      # Extraction des actions spécifiques
+      actions = data["actions"] || []
+      likes = actions.find { |a| a["action_type"] == "like" }&.dig("value").to_i
+      comments = actions.find { |a| a["action_type"] == "comment" }&.dig("value").to_i
+      reposts = actions.find { |a| a["action_type"] == "post" }&.dig("value").to_i
+      video_views = actions.find { |a| a["action_type"] == "video_view" }&.dig("value").to_i
+
       {
         impressions: data["impressions"].to_i,
         spend: data["spend"].to_f,
         clicks: data["clicks"].to_i,
         reach: data["reach"].to_i,
+        likes: likes,
+        comments: comments,
+        reposts: reposts,
+        video_views: video_views,
         campaign_name: data["campaign_name"],
         account_name: data["account_name"],
         date_start: data["date_start"],

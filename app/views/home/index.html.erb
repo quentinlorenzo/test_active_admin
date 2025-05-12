@@ -26,6 +26,22 @@
           <h3>Dépenses</h3>
           <p><%= number_to_currency(@global_data[:spend], unit: '€') %></p>
         </div>
+        <div class="stat-card">
+          <h3>Likes</h3>
+          <p><%= number_with_delimiter(@global_data[:likes]) %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Commentaires</h3>
+          <p><%= number_with_delimiter(@global_data[:comments]) %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Partages</h3>
+          <p><%= number_with_delimiter(@global_data[:reposts]) %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Vues de vidéo</h3>
+          <p><%= number_with_delimiter(@global_data[:video_views]) %></p>
+        </div>
       </div>
       <div class="campaign-dates">
         <p>
