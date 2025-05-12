@@ -98,3 +98,15 @@
   max-width: 45%;
   height: 400px;
 }
+
+.campaign-status {
+  margin: 1rem 0;
+}
+.ended {
+  color: #28a745; /* Rouge */
+  font-weight: bold;
+}
+.active {
+  color: #d3a314; /* Vert */
+  font-weight: bold;
+}
