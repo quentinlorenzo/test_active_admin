@@ -15,7 +15,7 @@ class FacebookAdsService
   # Fetch global campaign insights
   def fetch_global_insights(campaign_id)
     @options[:query].merge!(
-      fields: "impressions,spend,clicks,reach,actions,account_name,campaign_name,date_start,date_stop"
+      fields: "impressions,spend,clicks,reach,actions,account_name,campaign_name"
     )
     url = "/#{campaign_id}/insights"
 
@@ -48,6 +48,41 @@ class FacebookAdsService
       Rails.logger.error("Facebook API Error: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n"))
       {}
+    end
+  end
+
+  # Fetch status insights
+  def fetch_status_insights(campaign_id)
+    @options[:query].merge!(
+      fields: "status,start_time,stop_time"
+    )
+    url = "/#{campaign_id}"
+
+    begin
+      response = self.class.get(url, @options)
+      stop_time = response["stop_time"]
+
+      # Détermine si la campagne est terminée
+      is_ended = if stop_time
+                   Time.now > Time.parse(stop_time)
+      else
+                   false
+      end
+
+      {
+        status: response["status"],
+        start_time: response["start_time"],
+        stop_time: stop_time,
+        is_ended: is_ended
+      }
+    rescue => e
+      Rails.logger.error("Facebook API Error: #{e.message}")
+      {
+        status: nil,
+        start_time: nil,
+        stop_time: nil,
+        is_ended: nil
+      }
     end
   end
 

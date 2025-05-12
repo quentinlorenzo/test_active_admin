@@ -3,6 +3,16 @@
   <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "bg-red-500 text-black px-4 py-2 rounded" %>
   <div class="facebook-campaign-stats">
     <h2>Statistiques de la Campagne Facebook <%= @global_data[:campaign_name] %> --- <%= @global_data[:account_name] %></h2>
+    <div class="campaign-status">
+      <p>
+        <strong>Statut :</strong>
+        <% if @status_data[:is_ended] %>
+          <span class="ended">Terminée</span>
+        <% else %>
+          <span class="active">En cours</span>
+        <% end %>
+      </p>
+    </div>
     <% if flash[:alert].present? %>
       <div class="alert alert-error">
         <%= flash[:alert] %>
@@ -46,9 +56,9 @@
       <div class="campaign-dates">
         <p>
           <strong>Période de la campagne :</strong>
-          <% if @global_data[:date_start].present? && @global_data[:date_stop].present? %>
-            <%= l(Date.parse(@global_data[:date_start]), format: :long) %>
-            - <%= l(Date.parse(@global_data[:date_stop]), format: :long) %>
+          <% if @status_data[:start_time].present? && @status_data[:stop_time].present? %>
+            <%= l(Date.parse(@status_data[:start_time]), format: :long) %>
+            - <%= l(Date.parse(@status_data[:stop_time]), format: :long) %>
           <% else %>
             Période non disponible
           <% end %>
