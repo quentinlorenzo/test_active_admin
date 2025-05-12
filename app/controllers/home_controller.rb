@@ -4,14 +4,15 @@ class HomeController < ApplicationController
 
     if campaign_id.blank?
       flash.now[:alert] = "L'ID de campagne Facebook n'est pas configuré."
-      @campaign_data = {}
+      @global_data = {}
+      @gender_data = {}
       return
     end
 
-    @campaign_data = FacebookAdsService.new.fetch_campaign_insights(campaign_id)
+    @global_data = FacebookAdsService.new.fetch_global_insights(campaign_id)
+    @gender_data = FacebookAdsService.new.fetch_gender_breakdown(campaign_id)
 
-    if @campaign_data.blank?
-      flash.now[:alert] = "Impossible de récupérer les données de la campagne Facebook."
-    end
+    Rails.logger.debug "Global Data: #{@global_data.inspect}"
+    Rails.logger.debug "Gender Data: #{@gender_data.inspect}"
   end
 end

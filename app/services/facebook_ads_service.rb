@@ -12,10 +12,38 @@ class FacebookAdsService
     }
   end
 
-  # Fetch campaign insights
-  def fetch_campaign_insights(campaign_id)
+  # Fetch global campaign insights
+  def fetch_global_insights(campaign_id)
     @options[:query].merge!(
-      fields: "impressions,spend,clicks,reach,account_name,campaign_name,date_start,date_stop",
+      fields: "impressions,spend,clicks,reach,account_name,campaign_name,date_start,date_stop"
+    )
+    url = "/#{campaign_id}/insights"
+
+    begin
+      response = self.class.get(url, @options)
+      data = response["data"]&.first || {}
+
+      {
+        impressions: data["impressions"].to_i,
+        spend: data["spend"].to_f,
+        clicks: data["clicks"].to_i,
+        reach: data["reach"].to_i,
+        campaign_name: data["campaign_name"],
+        account_name: data["account_name"],
+        date_start: data["date_start"],
+        date_stop: data["date_stop"]
+      }
+    rescue => e
+      Rails.logger.error("Facebook API Error: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      {}
+    end
+  end
+
+  # Fetch gender breakdown insights
+  def fetch_gender_breakdown(campaign_id)
+    @options[:query].merge!(
+      fields: "impressions,clicks",
       breakdowns: "gender"
     )
     url = "/#{campaign_id}/insights"
@@ -24,32 +52,14 @@ class FacebookAdsService
       response = self.class.get(url, @options)
       data = response["data"] || []
 
-      # Calcul des totaux globaux
-      totals = {
-        impressions: data.sum { |d| d["impressions"].to_i },
-        spend: data.sum { |d| d["spend"].to_f },
-        clicks: data.sum { |d| d["clicks"].to_i },
-        reach: data.sum { |d| d["reach"].to_i }
-      }
-
-      # Organisation des données par genre
       gender_data = data.each_with_object({}) do |item, hash|
         hash[item["gender"]] = {
           impressions: item["impressions"].to_i,
-          clicks: item["clicks"].to_i,
-          spend: item["spend"].to_f,
-          reach: item["reach"].to_i
+          clicks: item["clicks"].to_i
         }
       end
 
-      {
-        totals: totals,
-        campaign_name: data.first&.dig("campaign_name"),
-        account_name: data.first&.dig("account_name"),
-        date_start: data.first&.dig("date_start"),
-        date_stop: data.first&.dig("date_stop"),
-        gender_breakdown: gender_data
-      }
+      { gender_breakdown: gender_data }
     rescue => e
       Rails.logger.error("Facebook API Error: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n"))
