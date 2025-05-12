@@ -2,7 +2,7 @@
   <div class="text-lg font-bold text-blue-500"> Welcome <%= current_user.email %> </div>
   <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "bg-red-500 text-black px-4 py-2 rounded" %>
   <div class="facebook-campaign-stats">
-    <h2>Statistiques de la Campagne Facebook <%= @global_data[:campaign_name] %></h2>
+    <h2>Statistiques de la Campagne Facebook <%= @global_data[:campaign_name] %> --- <%= @global_data[:account_name] %></h2>
     <% if flash[:alert].present? %>
       <div class="alert alert-error">
         <%= flash[:alert] %>
@@ -38,6 +38,9 @@
           <% end %>
         </p>
       </div>
+      <br>
+      <h3>Répartition des impressions, clics et portée par genre</h3>
+      <br>
       <div class="graph-container">
         <%= render 'shared/pie_chart',
         canvas_id: 'genderImpressionsPieChart',
@@ -62,6 +65,68 @@
         background_colors: ['#FF6384', '#36A2EB', '#FFCE56'],
         title: 'Répartition des clics par genre',
           metric_name: 'clics'
+        %>
+        <%= render 'shared/pie_chart',
+        canvas_id: 'genderReachPieChart',
+        labels: ['Femmes', 'Hommes', 'Non spécifié'],
+        data: [
+          @gender_data[:gender_breakdown]["female"][:reach],
+          @gender_data[:gender_breakdown]["male"][:reach],
+          @gender_data[:gender_breakdown]["unknown"][:reach]
+        ],
+        background_colors: ['#FF6384', '#36A2EB', '#FFCE56'],
+        title: 'Répartition de la portée par genre',
+          metric_name: 'portée'
+        %>
+      </div>
+      <br>
+      <h3>Répartition des impressions, clics et portée par tranche d'âge</h3>
+      <br>
+      <div class="graph-container">
+        <%= render 'shared/pie_chart',
+        canvas_id: 'ageImpressionsPieChart',
+        labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+        data: [
+          @age_data[:age_breakdown]["18-24"][:impressions],
+          @age_data[:age_breakdown]["25-34"][:impressions],
+          @age_data[:age_breakdown]["35-44"][:impressions],
+          @age_data[:age_breakdown]["45-54"][:impressions],
+          @age_data[:age_breakdown]["55-64"][:impressions],
+          @age_data[:age_breakdown]["65+"][:impressions]
+        ],
+        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+        title: 'Répartition des impressions par tranche d\'âge',
+          metric_name: 'impressions'
+        %>
+        <%= render 'shared/pie_chart',
+        canvas_id: 'ageClicksPieChart',
+        labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+        data: [
+          @age_data[:age_breakdown]["18-24"][:clicks],
+          @age_data[:age_breakdown]["25-34"][:clicks],
+          @age_data[:age_breakdown]["35-44"][:clicks],
+          @age_data[:age_breakdown]["45-54"][:clicks],
+          @age_data[:age_breakdown]["55-64"][:clicks],
+          @age_data[:age_breakdown]["65+"][:clicks]
+        ],
+        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+        title: 'Répartition des clics par tranche d\'âge',
+          metric_name: 'clics'
+        %>
+        <%= render 'shared/pie_chart',
+        canvas_id: 'ageReachPieChart',
+        labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+        data: [
+          @age_data[:age_breakdown]["18-24"][:reach],
+          @age_data[:age_breakdown]["25-34"][:reach],
+          @age_data[:age_breakdown]["35-44"][:reach],
+          @age_data[:age_breakdown]["45-54"][:reach],
+          @age_data[:age_breakdown]["55-64"][:reach],
+          @age_data[:age_breakdown]["65+"][:reach]
+        ],
+        background_colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+        title: 'Répartition de la portée par tranche d\'âge',
+          metric_name: 'portée'
         %>
       </div>
     <% else %>

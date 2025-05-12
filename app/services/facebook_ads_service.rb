@@ -43,7 +43,7 @@ class FacebookAdsService
   # Fetch gender breakdown insights
   def fetch_gender_breakdown(campaign_id)
     @options[:query].merge!(
-      fields: "impressions,clicks",
+      fields: "impressions,clicks,reach",
       breakdowns: "gender"
     )
     url = "/#{campaign_id}/insights"
@@ -55,11 +55,40 @@ class FacebookAdsService
       gender_data = data.each_with_object({}) do |item, hash|
         hash[item["gender"]] = {
           impressions: item["impressions"].to_i,
-          clicks: item["clicks"].to_i
+          clicks: item["clicks"].to_i,
+          reach: item["reach"].to_i
         }
       end
 
       { gender_breakdown: gender_data }
+    rescue => e
+      Rails.logger.error("Facebook API Error: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      {}
+    end
+  end
+
+  # Fetch age breakdown insights
+  def fetch_age_breakdown(campaign_id)
+    @options[:query].merge!(
+      fields: "impressions,clicks,reach",
+      breakdowns: "age"
+    )
+    url = "/#{campaign_id}/insights"
+
+    begin
+      response = self.class.get(url, @options)
+      data = response["data"] || []
+
+      age_data = data.each_with_object({}) do |item, hash|
+        hash[item["age"]] = {
+          impressions: item["impressions"].to_i,
+          clicks: item["clicks"].to_i,
+          reach: item["reach"].to_i
+        }
+      end
+
+      { age_breakdown: age_data }
     rescue => e
       Rails.logger.error("Facebook API Error: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n"))

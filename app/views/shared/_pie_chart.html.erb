@@ -45,7 +45,8 @@
             formatter: (value, ctx) => {
               const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
               const percentage = Math.round((value / total) * 100);
-              return `${percentage}%`;
+              const label = ctx.chart.data.labels[ctx.dataIndex];
+              return `${percentage}%\n${label}`;  // Ajoute le label sous le pourcentage
             },
             color: '#fff',
             font: {
