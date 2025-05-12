@@ -1,9 +1,48 @@
-<% if user_signed_in? %> 
-  <div class="text-lg font-bold text-blue-500"> Welcome <%= current_user.email %> </div> 
-  <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "bg-red-500 text-black px-4 py-2 rounded" %> 
-  <h1 class="text-2xl font-semibold">Home#index</h1>
-  <p class="font-bold text-gray-700">Find me in app/views/home/index.html.erb</p>
+<% if user_signed_in? %>
+  <div class="text-lg font-bold text-blue-500"> Welcome <%= current_user.email %> </div>
+  <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "bg-red-500 text-black px-4 py-2 rounded" %>
+  <div class="facebook-campaign-stats">
+    <h2>Statistiques de la Campagne Facebook <%= @campaign_data[:campaign_name] %></h2>
+    <% if flash[:alert].present? %>
+      <div class="alert alert-error">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+    <% if @campaign_data.present? && @campaign_data[:totals].present? %>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Impressions</h3>
+          <p><%= number_with_delimiter(@campaign_data[:totals][:impressions]) %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Portée</h3>
+          <p><%= number_with_delimiter(@campaign_data[:totals][:reach]) %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Clics</h3>
+          <p><%= number_with_delimiter(@campaign_data[:totals][:clicks]) %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Dépenses</h3>
+          <p><%= number_to_currency(@campaign_data[:totals][:spend], unit: '€') %></p>
+        </div>
+      </div>
+      <div class="campaign-dates">
+        <p>
+          <strong>Période de la campagne :</strong>
+          <% if @campaign_data[:date_start].present? && @campaign_data[:date_stop].present? %>
+            <%= l(Date.parse(@campaign_data[:date_start]), format: :long) %>
+            - <%= l(Date.parse(@campaign_data[:date_stop]), format: :long) %>
+          <% else %>
+            Période non disponible
+          <% end %>
+        </p>
+      </div>
+      <%= render 'home/demographics_chart' %>
+    <% else %>
+      <p class="no-data">Aucune donnée disponible pour le moment.</p>
+    <% end %>
+  </div>
 <% else %>
-  <%= button_to "Sign in", new_user_session_path, class: "bg-green-500 text-black px-4 py-2 rounded" %> 
+  <%= button_to "Sign in", new_user_session_path, class: "bg-green-500 text-black px-4 py-2 rounded" %>
 <% end %>
-

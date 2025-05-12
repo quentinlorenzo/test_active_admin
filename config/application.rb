@@ -11,6 +11,15 @@ module TestActiveAdmin
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
 
+    # Log des variables d'environnement au démarrage
+    # config.after_initialize do
+    #   Rails.logger.info "Facebook ENV variables check:"
+    #   Rails.logger.info "APP_ID present: #{ENV['FACEBOOK_APP_ID'].present?}"
+    #   Rails.logger.info "APP_SECRET present: #{ENV['FACEBOOK_APP_SECRET'].present?}"
+    #   Rails.logger.info "ACCESS_TOKEN present: #{ENV['FACEBOOK_ACCESS_TOKEN'].present?}"
+    #   Rails.logger.info "CAMPAIGN_ID present: #{ENV['FACEBOOK_CAMPAIGN_ID'].present?}"
+    # end
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

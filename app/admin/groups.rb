@@ -24,6 +24,7 @@ ActiveAdmin.register Group do
       group.updated_at
     end
     actions
+    # render partial: "admin/groups/stats_graph", locals: { chart_type: "bar" }
   end
 
   # Form configuration

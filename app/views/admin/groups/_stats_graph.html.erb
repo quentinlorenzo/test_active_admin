@@ -21,9 +21,9 @@
       }]
     };
 
-    // Configuration du graphique
+    // Configuration du graphique avec le type dynamique
     new Chart(ctx, {
-      type: 'bar',
+      type: '<%= chart_type || "bar" %>',  // Utilise le paramètre ou "bar" par défaut
       data: data,
       options: {
         responsive: true,

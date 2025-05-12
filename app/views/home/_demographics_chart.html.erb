@@ -1,0 +1,118 @@
+<%# Inclusion de Chart.js et du plugin datalabels %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<div class="graph-container">
+  <%# Graphique de répartition des impressions %>
+  <div class="graph-wrapper">
+    <canvas id="genderPieChart"></canvas>
+  </div>
+  <%# Graphique de répartition des clics %>
+  <div class="graph-wrapper">
+    <canvas id="genderMetricsChart"></canvas>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const genderData = <%= raw @campaign_data[:gender_breakdown].to_json %>;
+
+    // Graphique en camembert pour la répartition des impressions
+    const ctxPie = document.getElementById('genderPieChart').getContext('2d');
+    new Chart(ctxPie, {
+      type: 'pie',
+      data: {
+        labels: ['Femmes', 'Hommes', 'Non spécifié'],
+        datasets: [{
+          data: [
+            genderData.female?.impressions || 0,
+            genderData.male?.impressions || 0,
+            genderData.unknown?.impressions || 0
+          ],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Répartition des impressions par genre'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const value = context.raw;
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = Math.round((value / total) * 100);
+                return `${context.label}: ${percentage}% (${value.toLocaleString()} impressions)`;
+              }
+            }
+          },
+          datalabels: {
+            formatter: (value, ctx) => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = Math.round((value / total) * 100);
+              return `${percentage}%`;
+            },
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 14
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+
+    // Graphique en camembert pour la répartition des clics
+    const ctxBar = document.getElementById('genderMetricsChart').getContext('2d');
+    new Chart(ctxBar, {
+      type: 'pie',
+      data: {
+        labels: ['Femmes', 'Hommes', 'Non spécifié'],
+        datasets: [{
+          data: [
+            genderData.female?.clicks || 0,
+            genderData.male?.clicks || 0,
+            genderData.unknown?.clicks || 0
+          ],
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Répartition des clics par genre'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const value = context.raw;
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = Math.round((value / total) * 100);
+                return `${context.label}: ${percentage}% (${value.toLocaleString()} clics)`;
+              }
+            }
+          },
+          datalabels: {
+            formatter: (value, ctx) => {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = Math.round((value / total) * 100);
+              return `${percentage}%`;
+            },
+            color: '#fff',
+            font: {
+              weight: 'bold',
+              size: 14
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  });
+</script> 

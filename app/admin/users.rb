@@ -31,11 +31,6 @@ ActiveAdmin.register User do
     actions  # Default action links
   end
 
-  # index as: :my_idea do
-  #   column :email
-  #   actions
-  # end
-
   # Filter configuration
   filter :email  # Filter by email
   filter :created_at  # Filter by creation date

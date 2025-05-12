@@ -273,5 +273,10 @@ ActiveAdmin.setup do |config|
   #
   # config.order_clause = MyOrderClause
 
-  require Rails.root.join("app/views/active_admin/index_as_my_idea.rb")
+  # == Order clause
+  #
+  # By default ActiveAdmin::OrderClause is used for sorting logic
+  # You can inherit it with own class and inject it for all resources
+  #
+  # config.order_clause = MyOrderClause
 end

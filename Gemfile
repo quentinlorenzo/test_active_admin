@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+gem "dotenv-rails"  # Pour charger les variables d'environnement
+
 ruby "3.4.3"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
@@ -47,7 +49,8 @@ gem "draper"
 gem "pundit"
 gem "sassc-rails"
 
-gem 'chart-js-rails'
+gem "chart-js-rails"
+gem "httparty"  # Pour les requêtes HTTP vers l'API Facebook
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
