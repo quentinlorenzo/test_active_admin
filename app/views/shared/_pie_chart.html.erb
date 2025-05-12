@@ -62,7 +62,7 @@
               const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
               const percentage = Math.round((value / total) * 100);
               const label = ctx.chart.data.labels[ctx.dataIndex];
-              return `${percentage}%\n${label}`;  // Ajoute le label sous le pourcentage
+              return `${percentage}%\n${label}`;
             },
             color: '#fff',
             font: {

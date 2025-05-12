@@ -76,7 +76,7 @@
           @gender_data[:gender_breakdown]["male"][:impressions],
           @gender_data[:gender_breakdown]["unknown"][:impressions]
         ],
-        title: 'Répartition des impressions par genre',
+        title: "Répartition des impressions par genre",
           metric_name: 'impressions'
         %>
         <%= render 'shared/pie_chart',
@@ -87,7 +87,7 @@
           @gender_data[:gender_breakdown]["male"][:clicks],
           @gender_data[:gender_breakdown]["unknown"][:clicks]
         ],
-        title: 'Répartition des clics par genre',
+        title: "Répartition des clics par genre",
           metric_name: 'clics'
         %>
         <%= render 'shared/pie_chart',
@@ -98,7 +98,7 @@
           @gender_data[:gender_breakdown]["male"][:reach],
           @gender_data[:gender_breakdown]["unknown"][:reach]
         ],
-        title: 'Répartition de la portée par genre',
+        title: "Répartition de la portée par genre",
           metric_name: 'portée'
         %>
       </div>
@@ -117,7 +117,7 @@
           @age_data[:age_breakdown]["55-64"][:impressions],
           @age_data[:age_breakdown]["65+"][:impressions]
         ],
-        title: 'Répartition des impressions par tranche d\'âge',
+        title: "Répartition des impressions par tranche d'âge",
           metric_name: 'impressions'
         %>
         <%= render 'shared/pie_chart',
@@ -131,7 +131,7 @@
           @age_data[:age_breakdown]["55-64"][:clicks],
           @age_data[:age_breakdown]["65+"][:clicks]
         ],
-        title: 'Répartition des clics par tranche d\'âge',
+        title: "Répartition des clics par tranche d'âge",
           metric_name: 'clics'
         %>
         <%= render 'shared/pie_chart',
@@ -145,7 +145,7 @@
           @age_data[:age_breakdown]["55-64"][:reach],
           @age_data[:age_breakdown]["65+"][:reach]
         ],
-        title: 'Répartition de la portée par tranche d\'âge',
+        title: "Répartition de la portée par tranche d'âge",
           metric_name: 'portée'
         %>
       </div>
@@ -157,21 +157,21 @@
         canvas_id: 'locationImpressionsPieChart',
         labels: @location_data[:location_breakdown].keys,
         data: @location_data[:location_breakdown].values.map { |data| data[:impressions] },
-        title: 'Répartition des impressions par région',
+        title: "Répartition des impressions par région",
           metric_name: 'impressions'
         %>
         <%= render 'shared/pie_chart',
         canvas_id: 'locationClicksPieChart',
         labels: @location_data[:location_breakdown].keys,
         data: @location_data[:location_breakdown].values.map { |data| data[:clicks] },
-        title: 'Répartition des clics par région',
+        title: "Répartition des clics par région",
           metric_name: 'clics'
         %>
         <%= render 'shared/pie_chart',
         canvas_id: 'locationReachPieChart',
         labels: @location_data[:location_breakdown].keys,
         data: @location_data[:location_breakdown].values.map { |data| data[:reach] },
-        title: 'Répartition de la portée par région',
+        title: "Répartition de la portée par région",
           metric_name: 'portée'
         %>
       </div>
@@ -183,21 +183,21 @@
         canvas_id: 'deviceImpressionsPieChart',
         labels: @device_data[:device_breakdown].keys,
         data: @device_data[:device_breakdown].values.map { |data| data[:impressions] },
-        title: 'Répartition des impressions par appareil',
+        title: "Répartition des impressions par appareil",
           metric_name: 'impressions'
         %>
         <%= render 'shared/pie_chart',
         canvas_id: 'deviceClicksPieChart',
         labels: @device_data[:device_breakdown].keys,
         data: @device_data[:device_breakdown].values.map { |data| data[:clicks] },
-        title: 'Répartition des clics par appareil',
+        title: "Répartition des clics par appareil",
           metric_name: 'clics'
         %>
         <%= render 'shared/pie_chart',
         canvas_id: 'deviceReachPieChart',
         labels: @device_data[:device_breakdown].keys,
         data: @device_data[:device_breakdown].values.map { |data| data[:reach] },
-        title: 'Répartition de la portée par appareil',
+        title: "Répartition de la portée par appareil",
           metric_name: 'portée'
         %>
       <% else %>
