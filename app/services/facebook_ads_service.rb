@@ -15,7 +15,7 @@ class FacebookAdsService
   # Fetch global campaign insights
   def fetch_global_insights(campaign_id)
     @options[:query].merge!(
-      fields: "impressions,spend,clicks,reach,actions,account_name,campaign_name"
+      fields: "impressions,spend,clicks,ctr,reach,actions,account_name,campaign_name"
     )
     url = "/#{campaign_id}/insights"
 
@@ -34,6 +34,7 @@ class FacebookAdsService
         impressions: data["impressions"].to_i,
         spend: data["spend"].to_f,
         clicks: data["clicks"].to_i,
+        ctr: data["ctr"].to_f,
         reach: data["reach"].to_i,
         likes: likes,
         comments: comments,

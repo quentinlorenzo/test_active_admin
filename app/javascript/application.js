@@ -3,5 +3,10 @@ import "@hotwired/turbo-rails"
 import "controllers"
 
 // Import Chart.js
-import Chart from 'chart.js/auto'
-window.Chart = Chart  // Make Chart available globally
+import "chart.js"
+import "chartjs-plugin-datalabels"
+import "./custom/chart_init"
+
+// Import custom modules
+import { filterContent } from "./custom/filter"
+window.filterContent = filterContent  // Make filterContent available globally

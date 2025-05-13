@@ -1,0 +1,228 @@
+<div class="facebook-campaign-stats">
+  <% if local_assigns[:global_data].present? && local_assigns[:gender_data].present? && local_assigns[:age_data].present? && local_assigns[:location_data].present? && local_assigns[:device_data].present? %>
+    <h2>Statistiques de la Campagne Facebook <%= global_data[:campaign_name] %> --- <%= global_data[:account_name] %></h2>
+    <div class="campaign-status">
+      <p>
+        <strong>Statut :</strong>
+        <% if status_data[:is_ended] %>
+          <span class="ended">Terminée</span>
+        <% else %>
+          <span class="active">En cours</span>
+        <% end %>
+      </p>
+    </div>
+    <% if flash[:alert].present? %>
+      <div class="alert alert-error">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Impressions</h3>
+        <p><%= number_with_delimiter(global_data[:impressions]) %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Portée</h3>
+        <p><%= number_with_delimiter(global_data[:reach]) %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Clics</h3>
+        <p><%= number_with_delimiter(global_data[:clicks]) %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Dépenses</h3>
+        <p><%= number_to_currency(global_data[:spend], unit: '€') %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Clic par impression</h3>
+        <p>1 / <%= (100 / global_data[:ctr]).round %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Likes</h3>
+        <p><%= number_with_delimiter(global_data[:likes]) %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Commentaires</h3>
+        <p><%= number_with_delimiter(global_data[:comments]) %></p>
+      </div>
+      <div class="stat-card">
+        <h3>Vues de vidéo</h3>
+        <p><%= number_with_delimiter(global_data[:video_views]) %></p>
+      </div>
+    </div>
+    <div class="campaign-dates">
+      <p>
+        <strong>Période de la campagne :</strong>
+        <% if status_data[:start_time].present? && status_data[:stop_time].present? %>
+          <%= l(Date.parse(status_data[:start_time]), format: :long) %>
+          - <%= l(Date.parse(status_data[:stop_time]), format: :long) %>
+        <% else %>
+          Période non disponible
+        <% end %>
+      </p>
+    </div>
+    <div class="filter-container">
+      <%= form_tag '#', method: :get, id: "filter-form" do %>
+        <%= select_tag :filter, 
+          options_for_select([
+            ["Toutes les données", "all"],
+            ["Données par genre", "gender"],
+            ["Données par âge", "age"],
+            ["Données par région", "location"],
+            ["Données par appareil", "device"]
+          ], params[:filter]), 
+          onchange: 'filterContent(this.value)',
+          class: "filter-select" 
+        %>
+      <% end %>
+    </div>
+    <div id="gender-section" class="data-section">
+      <br>
+      <h3>Répartition des impressions, clics et portée par genre</h3>
+      <br>
+      <div class="graph-container">
+        <%= render 'shared/pie_chart',
+          canvas_id: 'genderImpressionsPieChart',
+          labels: ['Femmes', 'Hommes', 'Non spécifié'],
+          data: [
+            gender_data[:gender_breakdown]["female"][:impressions],
+            gender_data[:gender_breakdown]["male"][:impressions],
+            gender_data[:gender_breakdown]["unknown"][:impressions]
+          ],
+          title: "Répartition des impressions par genre",
+          metric_name: 'impressions'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'genderClicksPieChart',
+          labels: ['Femmes', 'Hommes', 'Non spécifié'],
+          data: [
+            gender_data[:gender_breakdown]["female"][:clicks],
+            gender_data[:gender_breakdown]["male"][:clicks],
+            gender_data[:gender_breakdown]["unknown"][:clicks]
+          ],
+          title: "Répartition des clics par genre",
+          metric_name: 'clics'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'genderReachPieChart',
+          labels: ['Femmes', 'Hommes', 'Non spécifié'],
+          data: [
+            gender_data[:gender_breakdown]["female"][:reach],
+            gender_data[:gender_breakdown]["male"][:reach],
+            gender_data[:gender_breakdown]["unknown"][:reach]
+          ],
+          title: "Répartition de la portée par genre",
+          metric_name: 'portée'
+        %>
+      </div>
+    </div>
+    <div id="age-section" class="data-section">
+      <br>
+      <h3>Répartition des impressions, clics et portée par tranche d'âge</h3>
+      <br>
+      <div class="graph-container">
+        <%= render 'shared/pie_chart',
+          canvas_id: 'ageImpressionsPieChart',
+          labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+          data: [
+            age_data[:age_breakdown]["18-24"][:impressions],
+            age_data[:age_breakdown]["25-34"][:impressions],
+            age_data[:age_breakdown]["35-44"][:impressions],
+            age_data[:age_breakdown]["45-54"][:impressions],
+            age_data[:age_breakdown]["55-64"][:impressions],
+            age_data[:age_breakdown]["65+"][:impressions]
+          ],
+          title: "Répartition des impressions par tranche d'âge",
+          metric_name: 'impressions'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'ageClicksPieChart',
+          labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+          data: [
+            age_data[:age_breakdown]["18-24"][:clicks],
+            age_data[:age_breakdown]["25-34"][:clicks],
+            age_data[:age_breakdown]["35-44"][:clicks],
+            age_data[:age_breakdown]["45-54"][:clicks],
+            age_data[:age_breakdown]["55-64"][:clicks],
+            age_data[:age_breakdown]["65+"][:clicks]
+          ],
+          title: "Répartition des clics par tranche d'âge",
+          metric_name: 'clics'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'ageReachPieChart',
+          labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+          data: [
+            age_data[:age_breakdown]["18-24"][:reach],
+            age_data[:age_breakdown]["25-34"][:reach],
+            age_data[:age_breakdown]["35-44"][:reach],
+            age_data[:age_breakdown]["45-54"][:reach],
+            age_data[:age_breakdown]["55-64"][:reach],
+            age_data[:age_breakdown]["65+"][:reach]
+          ],
+          title: "Répartition de la portée par tranche d'âge",
+          metric_name: 'portée'
+        %>
+      </div>
+    </div>
+    <div id="location-section" class="data-section">
+      <br>
+      <h3>Répartition des impressions, clics et portée par région</h3>
+      <br>
+      <div class="graph-container">
+        <%= render 'shared/pie_chart',
+          canvas_id: 'locationImpressionsPieChart',
+          labels: location_data[:location_breakdown].keys,
+          data: location_data[:location_breakdown].values.map { |data| data[:impressions] },
+          title: "Répartition des impressions par région",
+          metric_name: 'impressions'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'locationClicksPieChart',
+          labels: location_data[:location_breakdown].keys,
+          data: location_data[:location_breakdown].values.map { |data| data[:clicks] },
+          title: "Répartition des clics par région",
+          metric_name: 'clics'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'locationReachPieChart',
+          labels: location_data[:location_breakdown].keys,
+          data: location_data[:location_breakdown].values.map { |data| data[:reach] },
+          title: "Répartition de la portée par région",
+          metric_name: 'portée'
+        %>
+      </div>
+    </div>
+    <div id="device-section" class="data-section">
+      <br>
+      <h3>Répartition des impressions, clics et portée par appareil</h3>
+      <br>
+      <div class="graph-container">
+        <%= render 'shared/pie_chart',
+          canvas_id: 'deviceImpressionsPieChart',
+          labels: device_data[:device_breakdown].keys,
+          data: device_data[:device_breakdown].values.map { |data| data[:impressions] },
+          title: "Répartition des impressions par appareil",
+          metric_name: 'impressions'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'deviceClicksPieChart',
+          labels: device_data[:device_breakdown].keys,
+          data: device_data[:device_breakdown].values.map { |data| data[:clicks] },
+          title: "Répartition des clics par appareil",
+          metric_name: 'clics'
+        %>
+        <%= render 'shared/pie_chart',
+          canvas_id: 'deviceReachPieChart',
+          labels: device_data[:device_breakdown].keys,
+          data: device_data[:device_breakdown].values.map { |data| data[:reach] },
+          title: "Répartition de la portée par appareil",
+          metric_name: 'portée'
+        %>
+      </div>
+    </div>
+  <% else %>
+    <p class="no-data">Aucune donnée disponible pour le moment.</p>
+  <% end %>
+</div>
+ 

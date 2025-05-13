@@ -110,3 +110,9 @@
   color: #d3a314; /* Vert */
   font-weight: bold;
 }
+.data-section {
+  display: none;
+}
+.data-section.active {
+  display: block;
+}
