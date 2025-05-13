@@ -225,4 +225,46 @@
     <p class="no-data">Aucune donnée disponible pour le moment.</p>
   <% end %>
 </div>
- 
+<script>
+  function filterContent(value) {
+    // Masquer toutes les sections
+    document.querySelectorAll('.data-section').forEach(section => {
+      section.style.display = 'none';
+    });
+
+    // Afficher la section sélectionnée ou toutes les sections si "all" est sélectionné
+    if (value === 'all') {
+      document.querySelectorAll('.data-section').forEach(section => {
+        section.style.display = 'block';
+      });
+    } else {
+      const selectedSection = document.getElementById(value + '-section');
+      if (selectedSection) {
+        selectedSection.style.display = 'block';
+      }
+    }
+
+    // Forcer le re-rendu des graphiques visibles
+    Object.values(window.chartInstances || {}).forEach(chart => {
+      if (chart) {
+        chart.resize();
+      }
+    });
+  }
+
+  // Appliquer le filtre initial
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterSelect = document.querySelector('.filter-select');
+    if (filterSelect) {
+      filterContent(filterSelect.value);
+    }
+  });
+
+  // Pour Turbo
+  document.addEventListener('turbo:load', function() {
+    const filterSelect = document.querySelector('.filter-select');
+    if (filterSelect) {
+      filterContent(filterSelect.value);
+    }
+  });
+</script>

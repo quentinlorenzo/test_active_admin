@@ -14,10 +14,29 @@ export function filterContent(value) {
       selectedSection.classList.add('active');
     }
   }
+
+  // Forcer le re-rendu des graphiques visibles
+  setTimeout(() => {
+    if (window.chartInstances) {
+      Object.values(window.chartInstances).forEach(chart => {
+        if (chart) {
+          chart.resize();
+        }
+      });
+    }
+  }, 100); // Petit délai pour laisser le temps aux transitions CSS
 }
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
+  const select = document.querySelector('.filter-select');
+  if (select) {
+    filterContent(select.value || 'all');
+  }
+});
+
+// Pour Turbo
+document.addEventListener('turbo:load', () => {
   const select = document.querySelector('.filter-select');
   if (select) {
     filterContent(select.value || 'all');

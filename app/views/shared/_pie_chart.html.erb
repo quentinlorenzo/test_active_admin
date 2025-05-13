@@ -12,67 +12,118 @@
   <canvas id="<%= canvas_id %>"></canvas>
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('<%= canvas_id %>').getContext('2d');
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: <%= raw labels.to_json %>,
-        datasets: [{
-          data: <%= raw data.to_json %>,
-          backgroundColor: [
-            '#FF6384',  //Rose
-            '#36A2EB',  //Bleu
-            '#FFCE56',  //Jaune
-            '#4BC0C0',  //Turquoise
-            '#9966FF',  //Violet
-            '#FF9F40',  //Orange
-            '#8AC24A',  //Vert clair
-            '#FF5722',  //Rouge-orange
-            '#607D8B',  //Bleu-gris
-            '#9C27B0',  //Violet foncé
-            '#00BCD4',  //Cyan
-            '#795548',  //Marron
-            '#CDDC39',  //Lime
-            '#3F51B5',  //Indigo
-            '#E91E63'   //Rose foncé
-            ]
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: {
-            display: true,
-            text: '<%= title %>'
+  (function() {
+    // Use window object to store chart instances
+    window.chartInstances = window.chartInstances || {};
+
+    function renderCharts() {
+      console.log('renderCharts pour', '<%= canvas_id %>');
+      const canvas = document.getElementById('<%= canvas_id %>');
+      if (!canvas) {
+        console.log('Canvas non trouvé pour', '<%= canvas_id %>');
+        return;
+      }
+
+      // Destroy existing chart if it exists
+      if (window.chartInstances['<%= canvas_id %>']) {
+        console.log('Destruction du graphique existant pour', '<%= canvas_id %>');
+        window.chartInstances['<%= canvas_id %>'].destroy();
+      }
+
+      try {
+        const ctx = canvas.getContext('2d');
+        window.chartInstances['<%= canvas_id %>'] = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: <%= raw labels.to_json %>,
+            datasets: [{
+              data: <%= raw data.to_json %>,
+              backgroundColor: [
+                '#FF6384',  //Rose
+                '#36A2EB',  //Bleu
+                '#FFCE56',  //Jaune
+                '#4BC0C0',  //Turquoise
+                '#9966FF',  //Violet
+                '#FF9F40',  //Orange
+                '#8AC24A',  //Vert clair
+                '#FF5722',  //Rouge-orange
+                '#607D8B',  //Bleu-gris
+                '#9C27B0',  //Violet foncé
+                '#00BCD4',  //Cyan
+                '#795548',  //Marron
+                '#CDDC39',  //Lime
+                '#3F51B5',  //Indigo
+                '#E91E63'   //Rose foncé
+                ]
+            }]
           },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const value = context.raw;
-                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                const percentage = Math.round((value / total) * 100);
-                return `${context.label}: ${percentage}% (${value.toLocaleString()} <%= metric_name %>)`;
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: '<%= title %>'
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const value = context.raw;
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = Math.round((value / total) * 100);
+                    return `${context.label}: ${percentage}% (${value.toLocaleString()} <%= metric_name %>)`;
+                  }
+                }
+              },
+              datalabels: {
+                formatter: (value, ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = Math.round((value / total) * 100);
+                  const label = ctx.chart.data.labels[ctx.dataIndex];
+                  return `${percentage}%\n${label}`;
+                },
+                color: '#fff',
+                font: {
+                  weight: 'bold',
+                  size: 14
+                }
               }
             }
           },
-          datalabels: {
-            formatter: (value, ctx) => {
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              const percentage = Math.round((value / total) * 100);
-              const label = ctx.chart.data.labels[ctx.dataIndex];
-              return `${percentage}%\n${label}`;
-            },
-            color: '#fff',
-            font: {
-              weight: 'bold',
-              size: 14
-            }
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
+          plugins: [ChartDataLabels]
+        });
+        console.log('Graphique créé pour', '<%= canvas_id %>');
+      } catch (error) {
+        console.error('Erreur lors de la création du graphique pour', '<%= canvas_id %>', error);
+      }
+    };
+
+    // Fonction pour vérifier si le DOM est prêt
+    function isDOMReady() {
+      return document.readyState === 'complete' || document.readyState === 'interactive';
+    }
+
+    // Gestion du chargement initial
+    if (isDOMReady()) {
+      console.log('DOM déjà prêt pour', '<%= canvas_id %>');
+      renderCharts();
+    } else {
+      console.log('Attente du DOM pour', '<%= canvas_id %>');
+      document.addEventListener('DOMContentLoaded', renderCharts);
+    }
+
+    // Pour Turbo
+    document.addEventListener('turbo:load', function() {
+      console.log('turbo:load pour', '<%= canvas_id %>');
+      renderCharts();
     });
-  });
+
+    document.addEventListener('turbo:before-render', function() {
+      console.log('turbo:before-render pour', '<%= canvas_id %>');
+      if (window.chartInstances['<%= canvas_id %>']) {
+        window.chartInstances['<%= canvas_id %>'].destroy();
+        delete window.chartInstances['<%= canvas_id %>'];
+      }
+    });
+  })();
 </script> 
