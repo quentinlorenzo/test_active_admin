@@ -57,5 +57,7 @@ class HomeController < ApplicationController
     Rails.logger.debug "Device Data: #{@device_data.inspect}"
     Rails.logger.debug "Status Data: #{@status_data.inspect}"
     Rails.logger.debug "Time Stats: #{@time_stats.inspect}"
+    Rails.logger.debug "Hourly Stats: #{@hourly_stats.inspect}"
+    Rails.logger.debug "Daily Stats: #{@daily_stats.inspect}"
   end
 end

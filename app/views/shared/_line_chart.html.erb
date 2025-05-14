@@ -1,0 +1,160 @@
+<%# 
+  Composant réutilisable pour les graphiques en ligne.
+  Paramètres requis :
+  - canvas_id: ID du canvas HTML
+  - data: Hash contenant les données horaires
+%>
+<div class="graph-line-wrapper">
+  <canvas id="<%= canvas_id %>" style="height: 600px !important;"></canvas>
+</div>
+<script>
+  (function() {
+    // Use window object to store chart instances
+    window.chartInstances = window.chartInstances || {};
+
+    function formatDate(dateStr, hour) {
+      const date = new Date(dateStr);
+      const day = date.getDate();
+      const month = date.toLocaleString('fr-FR', { month: 'long' });
+      const year = date.getFullYear();
+      return `${day} ${month} ${year} ${hour}h`;
+    }
+
+    function renderChart() {
+      const canvas = document.getElementById('<%= canvas_id %>');
+      if (!canvas) return;
+
+      // Destroy existing chart if it exists
+      if (window.chartInstances['<%= canvas_id %>']) {
+        window.chartInstances['<%= canvas_id %>'].destroy();
+      }
+
+      // Préparer les données
+      const hourlyData = <%= raw data.to_json %>;
+      const labels = [];
+      const impressionsData = [];
+      const clicksData = [];
+
+      // Trier les dates
+      const sortedDates = Object.keys(hourlyData).sort();
+
+      // Pour chaque date
+      sortedDates.forEach(date => {
+        const hours = hourlyData[date];
+        // Pour chaque heure (00-23)
+        for (let h = 0; h < 24; h++) {
+          const hour = h.toString().padStart(2, '0');
+          if (hours[hour]) {
+            labels.push(formatDate(date, hour));
+            impressionsData.push(hours[hour].impressions);
+            clicksData.push(hours[hour].clicks);
+          }
+        }
+      });
+
+      const ctx = canvas.getContext('2d');
+      window.chartInstances['<%= canvas_id %>'] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Impressions',
+              data: impressionsData,
+              borderColor: '#36A2EB',
+              backgroundColor: 'rgba(54, 162, 235, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 0
+            },
+            {
+              label: 'Clics',
+              data: clicksData,
+              borderColor: '#FF6384',
+              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Évolution des impressions et clics par heure'
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              displayColors: true,
+              callbacks: {
+                title: function(context) {
+                  return context[0].label;
+                },
+                label: function(context) {
+                  const value = context.parsed.y;
+                  if (value === null || value === undefined) return '';
+                  return `${context.dataset.label}: ${value.toLocaleString('fr-FR')}`;
+                }
+              }
+            },
+            legend: {
+              position: 'top',
+              labels: {
+                usePointStyle: true,
+                boxWidth: 10
+              }
+            }
+          },
+          scales: {
+            x: {
+              display: true,
+              grid: {
+                display: false
+              },
+              ticks: {
+                maxRotation: 45,
+                minRotation: 45,
+                maxTicksLimit: 8
+              }
+            },
+            y: {
+              display: true,
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.1)'
+              },
+              ticks: {
+                callback: function(value) {
+                  return value.toLocaleString('fr-FR');
+                }
+              }
+            }
+          },
+          interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+          }
+        }
+      });
+    };
+
+    // Pour les pages standard
+    document.addEventListener('DOMContentLoaded', renderChart);
+
+    // Pour Turbo
+    document.addEventListener('turbo:load', renderChart);
+    document.addEventListener('turbo:before-render', function() {
+      if (window.chartInstances['<%= canvas_id %>']) {
+        window.chartInstances['<%= canvas_id %>'].destroy();
+        delete window.chartInstances['<%= canvas_id %>'];
+      }
+    });
+  })();
+</script> 

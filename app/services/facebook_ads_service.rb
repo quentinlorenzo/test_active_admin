@@ -219,15 +219,15 @@ class FacebookAdsService
     url = "/#{campaign_id}/insights"
 
     begin
-      puts "Requête API daily: #{@options[:query]}"
+      # puts "Requête API daily: #{@options[:query]}"
       response = self.class.get(url, @options)
 
       # Pour débogage
-      if response["data"].nil? || response["data"].empty?
-        puts "Aucune donnée reçue. Réponse: #{response.body}"
-      else
-        puts "Nombre d'éléments reçus: #{response["data"].size}"
-      end
+      # if response["data"].nil? || response["data"].empty?
+      #   puts "Aucune donnée reçue. Réponse: #{response.body}"
+      # else
+      #   puts "Nombre d'éléments reçus: #{response["data"].size}"
+      # end
 
       data = response["data"] || []
 
@@ -264,13 +264,13 @@ class FacebookAdsService
 
     # Si aucune donnée quotidienne, retourner le résultat vide
     if daily_data[:daily_breakdown].empty?
-      Rails.logger.warn("Aucune donnée quotidienne trouvée pour la campagne #{campaign_id}")
+      # Rails.logger.warn("Aucune donnée quotidienne trouvée pour la campagne #{campaign_id}")
       return complete_data
     end
 
     # Pour chaque jour, récupérer les données horaires
     daily_data[:daily_breakdown].each do |date, _|
-      Rails.logger.info("Récupération des données horaires pour #{date}")
+      # Rails.logger.info("Récupération des données horaires pour #{date}")
 
       # Utiliser le jour comme début et fin pour obtenir les données de ce jour uniquement
       hourly_result = fetch_single_day_hourly_insights(campaign_id, date)
@@ -300,11 +300,11 @@ class FacebookAdsService
     url = "/#{campaign_id}/insights"
 
     begin
-      Rails.logger.info("Requête API horaire pour #{date}: #{@options[:query]}")
+      # Rails.logger.info("Requête API horaire pour #{date}: #{@options[:query]}")
       response = self.class.get(url, @options)
       data = response["data"] || []
 
-      Rails.logger.info("Nombre de données horaires reçues pour #{date}: #{data.size}")
+      # Rails.logger.info("Nombre de données horaires reçues pour #{date}: #{data.size}")
 
       # Organiser les données par heure pour ce jour
       hourly_data = {}

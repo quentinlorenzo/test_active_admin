@@ -102,12 +102,27 @@ ActiveAdmin.register User do
       @location_data = FacebookAdsService.new.fetch_location_breakdown(campaign_id)
       @device_data = FacebookAdsService.new.fetch_device_breakdown(campaign_id)
       @status_data = FacebookAdsService.new.fetch_status_insights(campaign_id)
-      Rails.logger.debug "Global Data: #{@global_data.inspect}"
-      Rails.logger.debug "Gender Data: #{@gender_data.inspect}"
-      Rails.logger.debug "Age Data: #{@age_data.inspect}"
-      Rails.logger.debug "Location Data: #{@location_data.inspect}"
-      Rails.logger.debug "Device Data: #{@device_data.inspect}"
-      Rails.logger.debug "Status Data: #{@status_data.inspect}"
+      # Préparer les dates pour la récupération des données temporelles
+      start_date = nil
+      end_date = nil
+      begin
+        if @status_data[:start_time].present?
+          start_date = Date.parse(@status_data[:start_time]).strftime("%Y-%m-%d")
+        end
+        if @status_data[:stop_time].present?
+          end_date = Date.parse(@status_data[:stop_time]).strftime("%Y-%m-%d")
+        else
+          end_date = Date.today.strftime("%Y-%m-%d")
+        end
+      rescue => e
+        Rails.logger.error("Erreur lors du parsing des dates: #{e.message}")
+      end
+      # Récupérer toutes les données (quotidiennes et horaires) en une seule fois
+      @time_stats = FacebookAdsService.new.fetch_complete_insights(campaign_id, start_date, end_date)
+
+      # Pour la rétrocompatibilité avec le code existant
+      @daily_stats = { daily_breakdown: @time_stats[:daily_breakdown] }
+      @hourly_stats = { hourly_breakdown: @time_stats[:hourly_breakdown] }
 
       render partial: "shared/facebook_stats",
              locals: {
@@ -116,7 +131,10 @@ ActiveAdmin.register User do
                age_data: @age_data,
                location_data: @location_data,
                device_data: @device_data,
-               status_data: @status_data
+               status_data: @status_data,
+               time_stats: @time_stats,
+               daily_stats: @daily_stats,
+               hourly_stats: @hourly_stats
              }
     end
   end

@@ -1,6 +1,15 @@
 <div class="facebook-campaign-stats">
   <% if local_assigns[:global_data].present? && local_assigns[:gender_data].present? && local_assigns[:age_data].present? && local_assigns[:location_data].present? && local_assigns[:device_data].present? %>
     <h2>Statistiques de la Campagne Facebook <%= global_data[:campaign_name] %> --- <%= global_data[:account_name] %></h2>
+    <%# Ajout du graphique en ligne pour les données horaires %>
+    <% if local_assigns[:time_stats].present? && time_stats[:hourly_breakdown].present? %>
+      <div class="time-series-chart-container">
+        <%= render 'shared/line_chart',
+          canvas_id: 'hourlyStatsChart',
+          data: time_stats[:hourly_breakdown]
+        %>
+      </div>
+    <% end %>
     <div class="campaign-status">
       <p>
         <strong>Statut :</strong>

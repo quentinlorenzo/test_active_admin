@@ -7,7 +7,10 @@
     age_data: @age_data,
     location_data: @location_data,
     device_data: @device_data,
-    status_data: @status_data
+    status_data: @status_data,
+    time_stats: @time_stats,
+    daily_stats: @daily_stats,
+    hourly_stats: @hourly_stats
   %>
 <% else %>
   <%= button_to "Sign in", new_user_session_path, class: "bg-green-500 text-black px-4 py-2 rounded" %>
