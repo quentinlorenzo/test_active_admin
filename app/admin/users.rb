@@ -83,7 +83,6 @@ ActiveAdmin.register User do
         column :email do |child|  # Child email with link
           link_to child.email, admin_user_path(child)
         end
-        column :parent  # Child's parent
         column :created_at  # Child creation date
         column do |child|  # Action links for child
           links = []
