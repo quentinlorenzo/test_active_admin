@@ -40,7 +40,7 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-gem "activeadmin", "4.0.0.beta15"
+gem "activeadmin", "4.0.0.beta16"
 
 # Plus integrations with:
 gem "devise"
